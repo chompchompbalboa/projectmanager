@@ -1,0 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Muli", sans-serif;
+  letter-spacing: 0.5px;
+  background-color: rgb(244, 247, 250);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
