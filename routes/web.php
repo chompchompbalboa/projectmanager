@@ -11,6 +11,22 @@
 |
 */
 
-Route::get('/{page?}', function () {
-    return view('projectmanager');
+Route::middleware(['auth'])->group(function() {
+
+  // App
+  Route::get('/app', function () {
+    return view('app');
+  });
+
+  // Initial Data
+  Route::get('/app/initial-data', 'DataController@buildInitialData');
+
+  // Save
+  Route::put('/app/save', 'DataController@saveData');
 });
+
+Route::get('/', function () {
+    return view('website');
+});
+
+Auth::routes();
