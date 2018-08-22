@@ -21,10 +21,22 @@ const ProjectTimeline = ({ isActiveTab, activeProject, updateProject, user }) =>
       activeProject.data[type].map((timelineItem, index) => {
         let pushItem = Object.assign({}, timelineItem)
         pushItem.updateKey = "data." + type + "." + index
+        if (typeof pushItem.data.project === "undefined") {
+          pushItem.data.project = {
+            id: activeProject.id
+          }
+        }
         timeline.push(pushItem)
       })
     }
     return _.orderBy(timeline, 'data.createdAt', 'desc')
+  }
+
+  const isItemEditable = (data, editable, user) => {
+    if (editable || user.id === data.author.id) {
+      return true
+    }
+    return false
   }
 
   return (
@@ -36,14 +48,23 @@ const ProjectTimeline = ({ isActiveTab, activeProject, updateProject, user }) =>
         updateProject={updateProject}
         user={user}/>
       {timeline().map((timelineItem, index) => {
+        const {
+          data,
+          editable,
+          id,
+          type,
+          updateKey
+        } = timelineItem
         return React.createElement(
-          projectDataMap[timelineItem.type].component,
+          projectDataMap[type].component,
           {
             key: index,
-            data: timelineItem.data,
-            editable: (timelineItem.editable ? true : false),
-            updateKey: timelineItem.updateKey,
-            updateProject: updateProject
+            id: id,
+            data: data,
+            editable: isItemEditable(data, editable, user),
+            updateKey: updateKey,
+            updateProject: updateProject,
+            user: user
           }
         )
       })}

@@ -63,6 +63,7 @@ export default class ProjectTimelineHeader extends Component {
     // Push the data to the array
     nextArray.push({
       type: type,
+      id: null,
       data: addOptionData,
       editable: true
     })

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Note extends Model
 {
   // Define which attributes will be visible
-  protected $visible = ['data', 'type'];
+  protected $visible = ['id', 'data', 'type'];
 
   // Build custom attributes
   protected $appends = ['data', 'type'];

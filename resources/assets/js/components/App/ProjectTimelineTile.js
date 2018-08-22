@@ -10,6 +10,10 @@ import styled from 'styled-components'
 //-----------------------------------------------------------------------------
 export default class ProjectTimelineTile extends Component {
 
+  state = {
+    saving: false
+  }
+
   static propTypes = {
     author: shape({
       id: number,
@@ -25,11 +29,17 @@ export default class ProjectTimelineTile extends Component {
     editable: false
   }
 
+  componentDidMount = () => {
+  }
+
   formatDate = (date) => {
     return moment(date).format('MMMM Do YYYY, h:mm a')
   }
 
   saveTile = (saveData) => {
+    this.setState({
+      saving: true
+    })
     const {
       updateProject,
       updateKey
@@ -48,7 +58,10 @@ export default class ProjectTimelineTile extends Component {
       return response.json()
     }).then(response => {
       if (response.success) {
-        updateProject(updateKey + ".editable", false)
+        this.setState({
+          saving: false
+        })
+        updateProject("data", response.project.data)
       }
     })
   }
@@ -56,11 +69,14 @@ export default class ProjectTimelineTile extends Component {
   render() {
     const { 
       author, 
-      createdAt, 
+      createdAt,
       editable,
       saveData, 
       children 
     } = this.props
+    const {
+      saving
+    } = this.state
 
     return (
       <Container>
@@ -75,7 +91,7 @@ export default class ProjectTimelineTile extends Component {
           <Actions 
             visible={editable}>
             <SaveButton
-              onClick={() => this.saveTile(saveData)}>Save</SaveButton>
+              onClick={() => this.saveTile(saveData)}>{saving ? "Saving..." : "Save"}</SaveButton>
           </Actions>
         </Footer>
       </Container>

@@ -10,9 +10,10 @@ import TextArea from './TextArea'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const ProjectNote = ({ editable, data: { author, createdAt, note, project }, updateKey, updateProject }) => {
+const ProjectNote = ({ editable, data: { author, createdAt, note, project }, id, updateKey, updateProject, user }) => {
 
   const saveData = {
+    id: id,
     type: "NOTE",
     data: {
       author: author,
