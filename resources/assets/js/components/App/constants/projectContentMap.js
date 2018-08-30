@@ -1,29 +1,33 @@
 //-----------------------------------------------------------------------------
 // Imports
 //-----------------------------------------------------------------------------
-import ProjectDesign from '../ProjectDesign'
+import ProjectActivity from '../ProjectActivity'
+import ProjectCalendar from '../ProjectCalendar'
+import ProjectHours from '../ProjectHours'
 import ProjectFiles from '../ProjectFiles'
-import ProjectTimeline from '../ProjectTimeline'
-import ProjectFinances from '../ProjectFinances';
 import ProjectPurchasing from '../ProjectPurchasing';
 //-----------------------------------------------------------------------------
 // Export
 //-----------------------------------------------------------------------------
 export default {
-  TO_DO: {
-    text: "To Do",
-    component: ProjectDesign
+  ACTIVITY: {
+    text: "Activity",
+    component: ProjectActivity
+  },
+  CALENDAR: {
+    text: "Calendar",
+    component: ProjectCalendar
+  },
+  HOURS: {
+    text: "Hours",
+    component: ProjectHours
   },
   FILES: {
     text: "Files",
     component: ProjectFiles
   },
-  PURCHASES: {
-    text: "Purchases",
+  PURCHASING: {
+    text: "Purchasing",
     component: ProjectPurchasing
-  },
-  TIMELINE: {
-    text: "Timeline",
-    component: ProjectTimeline
   }
 }

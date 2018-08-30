@@ -1,8 +1,10 @@
 //-----------------------------------------------------------------------------
 // Imports
 //-----------------------------------------------------------------------------
+import ProjectDate from '../ProjectDate'
 import ProjectNote from '../ProjectNote'
-import ProjectTodo from '../ProjectTodo'
+
+import dateConfig from '../config/date'
 //-----------------------------------------------------------------------------
 // Export
 //-----------------------------------------------------------------------------
@@ -15,12 +17,13 @@ export default {
       note: ""
     }
   },
-  TO_DO: {
-    component: ProjectTodo,
-    text: "To Do",
-    dataKey: "todos",
+  DATE: {
+    component: ProjectDate,
+    text: "Date",
+    dataKey: "date",
     data: {
-      todo: ""
+      date: dateConfig.format(new Date),
+      description: ""
     }
   },
 }

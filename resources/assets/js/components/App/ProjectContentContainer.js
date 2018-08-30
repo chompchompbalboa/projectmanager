@@ -28,7 +28,7 @@ ProjectContentContainer.propTypes = {
 ProjectContentContainer.defaultProps = {
   backgroundColor: "transparent",
   isActiveTab: false,
-  padding: "2vh"
+  padding: "0"
 }
 //-----------------------------------------------------------------------------
 // Styled Components
@@ -37,6 +37,7 @@ const Container = styled.div`
   display: ${props => props.isActiveTab ? "block" : "none"};
   padding: ${props => props.padding};
   width: 100%;
+  height: 100%;
   background-color: ${props => props.backgroundColor};
 `
 

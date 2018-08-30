@@ -7,8 +7,8 @@ import _ from 'lodash'
 
 import projectContentMap from './constants/projectContentMap'
 
-import projectsConfig from './config/projects'
-import sidebarConfig from './config/sidebar'
+import colors from './config/colors'
+import layout from './config/layout'
 
 import ProjectHeader from './ProjectHeader'
 import ProjectTabs from './ProjectTabs'
@@ -18,7 +18,7 @@ import ProjectTabs from './ProjectTabs'
 export default class Project extends Component {
 
   state = {
-    activeTab: 'TIMELINE',
+    activeTab: 'CALENDAR',
     activeProject: this.props.activeProject
   }
 
@@ -70,26 +70,30 @@ export default class Project extends Component {
 
   render() {
     const {
+      isActiveTab
+    } = this.props
+    const {
       activeProject,
-      activeTab
+      activeTab,
+      projects
     } = this.state
-
+    
     return (
-      <Container>
-        <ProjectHeader 
-          project={activeProject}/>
-        <ProjectContent>
-          <ProjectContentLeftColumn>
-            {this.buildProjectContent()}
-          </ProjectContentLeftColumn>
-          <ProjectContentRightColumn>
-            <ProjectTabs
-              activeTab={activeTab}
-              changeActiveTab={this.changeActiveTab}
-              projectId={activeProject.id}
-              tabs={activeProject.tabs}/>
-          </ProjectContentRightColumn>
-        </ProjectContent>
+      <Container
+        isActiveTab={isActiveTab}>
+        <LeftColumn>
+          <ProjectHeader 
+            activeProject={activeProject}
+            project={projects}/>
+          <ProjectTabs
+            activeTab={activeTab}
+            changeActiveTab={this.changeActiveTab}
+            projectId={activeProject.id}
+            tabs={activeProject.tabs}/>
+        </LeftColumn>
+        <RightColumn>
+          {this.buildProjectContent()}
+        </RightColumn>
       </Container>
     )
   }
@@ -98,24 +102,25 @@ export default class Project extends Component {
 // Styled Components
 //-----------------------------------------------------------------------------
 const Container = styled.div`
+  display: ${props => props.isActiveTab ? "block" : "none"};
+`
+
+const LeftColumn = styled.div`
   position: fixed;
-  top: 0;
-  left: ${sidebarConfig.mainWidth + sidebarConfig.activeWidth + "vw"};
-  width: calc(100vw - ${sidebarConfig.mainWidth + sidebarConfig.activeWidth + "vw"});
+  top: calc(${layout.project.tabsHeight} + ${layout.project.containerPadding});
+  left: calc(${layout.sidebar.width} + ${layout.project.containerPadding});
+  width: ${layout.project.leftColumnWidth};
   height: 100vh;
   overflow-y: scroll;
+  background-color: ${colors.siteBackground};
 `
 
-const ProjectContent = styled.div`
-  padding: ${projectsConfig.containerPadding};
-  display: flex;
-  justify-content: space-between;
-`
-
-const ProjectContentLeftColumn = styled.div`
-  width: calc(83% - (${projectsConfig.containerPadding} / 2));
-`
-
-const ProjectContentRightColumn = styled.div`
-  width: 17%;
+const RightColumn = styled.div`
+  position: fixed;
+  top: calc(${layout.project.tabsHeight} + ${layout.project.containerPadding});
+  left: calc(${layout.sidebar.width} + ${layout.project.containerPadding} + ${layout.project.leftColumnWidth} + ${layout.project.containerPadding});
+  width: calc(100vw - ${layout.sidebar.width} - ${layout.project.containerPadding} - ${layout.project.leftColumnWidth} - ${layout.project.containerPadding} - ${layout.project.containerPadding});
+  height: calc(100vh - ${layout.project.tabsHeight} - ${layout.project.containerPadding} - ${layout.project.containerPadding});
+  overflow-y: scroll;
+  background-color: ${colors.siteBackground};
 `

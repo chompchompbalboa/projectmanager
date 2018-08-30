@@ -15,10 +15,11 @@ class Project extends Model
    */
   public function getTabsAttribute() {
     return [
-      ["id" => "TIMELINE"],
-      ["id" => "TO_DO"],
-      ["id" => "FILES"],
-      ["id" => "PURCHASES"]
+      ["id" => "ACTIVITY"],
+      ["id" => "CALENDAR"],
+      ["id" => "PURCHASING"],
+      ["id" => "HOURS"],
+      ["id" => "FILES"]
     ];
   }
 
@@ -28,8 +29,16 @@ class Project extends Model
    */
   public function getDataAttribute() {
     return [
-      "notes" => $this->notes()->get()
+      "DATE" => $this->dates()->get(),
+      "NOTE" => $this->notes()->get()
     ];
+  }
+
+  /**
+   * Get all the dates that belong to this project
+   */
+  public function dates() {
+    return $this->hasMany('App\Models\Date');
   }
 
   /**

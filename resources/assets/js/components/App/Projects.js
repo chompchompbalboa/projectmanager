@@ -6,16 +6,21 @@ import { arrayOf, bool, shape, string } from 'prop-types'
 import styled from 'styled-components'
 import _ from 'lodash'
 
-import AppContent from './AppContent'
+import AppContentContainer from './AppContentContainer'
 import Project from './Project'
-import ProjectsSidebar from './ProjectsSidebar'
+import ProjectsTabs from './ProjectsTabs'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
 export default class Projects extends Component {
 
   state = {
-    activeProject: this.props.projects[0]
+    activeTab: 0,
+    tabs: [
+      this.props.projects[0],
+      this.props.projects[1],
+      this.props.projects[2]
+    ]
   }
 
   static propTypes = {
@@ -33,18 +38,65 @@ export default class Projects extends Component {
         code: "1800" + index, 
         name: "Project Name " + index,
         tabs: [
-          {id: 'TIMELINE'},
-          {id: 'TO_DO'},
+          {id: 'ACTIVITY'},
+          {id: 'CALENDAR'},
+          {id: 'PURCHASING'},
+          {id: 'HOURS'},
           {id: 'FILES'},
-          {id: 'PURCHASES'}
         ],
         data: {}
     }})
+  }
+  
+  addTab = (project) => {
+    const {
+      tabs
+    } = this.state
+    const projectIndex = tabs.indexOf(project)
+    let nextActiveTab, nextTabs
+    if(projectIndex === -1) {
+      nextTabs = _.clone(tabs)
+      nextTabs.push(project)
+      nextActiveTab = nextTabs.length - 1
+    }
+    else {
+      nextTabs = tabs
+      nextActiveTab = projectIndex
+    }
+    this.setState({
+      activeTab: nextActiveTab,
+      tabs: nextTabs
+    })
+  }
+
+  closeTab = (tabIndex) => {
+    const { 
+      activeTab, 
+      tabs 
+    } = this.state
+    let nextTabs = _.clone(tabs)
+    let nextActiveTab = (tabIndex <= activeTab ? (activeTab - 1 > 0 ? activeTab - 1 : 0) : activeTab)
+    if(nextTabs.length > 1) {
+      nextTabs.splice(tabIndex, 1)
+    }
+    if(nextTabs.length === 1) {
+      nextActiveTab = 0
+    }
+    this.setState({
+      activeTab: nextActiveTab,
+      tabs: nextTabs
+    })
   }
 
   setActiveProject = (nextActiveProject) => {
     this.setState({
       activeProject: nextActiveProject
+    })
+  }
+
+  setActiveTab = (nextActiveTab) => {
+    this.setState({
+      activeTab: nextActiveTab
     })
   }
 
@@ -56,19 +108,32 @@ export default class Projects extends Component {
     } = this.props
 
     const {
-      activeProject
+      activeTab,
+      tabs
     } = this.state
 
     return (
-      <AppContent isActiveContent={isActiveContent}>
-        <ProjectsSidebar 
-          activeProject={activeProject}
+      <AppContentContainer isActiveContent={isActiveContent}>
+        <ProjectsTabs
+          activeTab={activeTab} 
+          addTab={this.addTab}
+          closeTab={this.closeTab}
           projects={projects}
-          setActiveProject={this.setActiveProject}/>
-        <Project 
-          activeProject={activeProject}
-          user={user}/>
-      </AppContent>
+          setActiveProject={this.setActiveProject}
+          setActiveTab={this.setActiveTab}
+          tabs={tabs}/>
+        {tabs.map((activeProject, index) => {
+          return (
+            <Project
+              key={index} 
+              activeProject={activeProject}
+              isActiveTab={activeTab === index}
+              projects={projects}
+              setActiveProject={this.setActiveProject}
+              user={user}/>
+          )
+        })}
+      </AppContentContainer>
     )
   }
 }

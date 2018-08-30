@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
+use App\Models\Date;
 use App\Models\Note;
 use App\Models\Project;
 
@@ -35,7 +36,33 @@ class DataController extends Controller
    */
   public function saveData(Request $request)
   {
-    switch($request->type) {
+    switch($request->type) {      
+    case "DATE":
+      if(is_null($request->id)) {
+        $date = new Date;
+      }
+      else {
+        $date = Date::find($request->id);
+      }
+      if(!is_null($date)) {
+        $date->date = $request->data['date'];
+        $date->description = $request->data['description'];
+        $date->project_id = $request->data['project']['id'];
+        $date->user_id = $request->data['author']['id'];
+        $date->created_at = $request->data['createdAt'];
+        if ($date->save()) {
+          return [
+            "success" => true,
+            "project" => Project::find($date->project_id)
+          ];
+        }
+      }
+      return [
+        "success" => false,
+        "project" => Project::find($request['project']['id'])
+      ];
+    break;
+
       case "NOTE":
         if(is_null($request->id)) {
           $note = new Note;

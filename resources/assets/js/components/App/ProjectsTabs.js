@@ -2,43 +2,37 @@
 // Imports
 //-----------------------------------------------------------------------------
 import React, { Component } from 'react'
-import { number, shape, string } from 'prop-types'
 import styled from 'styled-components'
 
-import colors from './config/colors'
 import layout from './config/layout'
+
+import ProjectsTabsAddTab from './ProjectsTabsAddTab'
+import ProjectsTabsOpenTabs from './ProjectsTabsOpenTabs'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-export default class ProjectContentHeader extends Component {
-
-  static propTypes = {
-    project: shape({
-      id: number,
-      code: string,
-      name: string
-    })
-  }
-
-  static defaultProps = {
-    project: {
-      id: 0,
-      code: "000000",
-      name: "Default Project"
-    }
-  }
+export default class ProjectsTabs extends Component {
 
   render() {
-    const {
-      activeProject,
-      projects
+    const { 
+      activeTab, 
+      addTab,
+      closeTab,
+      projects,
+      setActiveTab, 
+      tabs 
     } = this.props
+
     return (
       <Container>
-        <Info>
-          <Name>{activeProject.name}</Name>
-          <Code>{activeProject.code}</Code>
-        </Info>
+        <ProjectsTabsOpenTabs 
+          activeTab={activeTab}
+          closeTab={closeTab}
+          setActiveTab={setActiveTab}
+          tabs={tabs}/>
+        <ProjectsTabsAddTab
+          projects={projects}
+          addTab={addTab}/>
       </Container>
     )
   }
@@ -47,16 +41,14 @@ export default class ProjectContentHeader extends Component {
 // Styled Components
 //-----------------------------------------------------------------------------
 const Container = styled.div`
-  width: 100%;
-  padding: 1.5vh 1vh;
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  left: ${layout.sidebar.width};
+  width: calc(100vw - ${layout.sidebar.width});
+  height: ${layout.project.tabsHeight};
+  background-color: rgb(200,200,200);
   display: flex;
+  justify-content: flex-start;
   align-items: center;
 `
-
-const Info = styled.div``
-
-const Name = styled.div`
-  font-size: 1.4em;
-  font-weight: bold`
-
-const Code = styled.div``

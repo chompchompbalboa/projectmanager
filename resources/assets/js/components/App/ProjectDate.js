@@ -3,22 +3,25 @@
 //-----------------------------------------------------------------------------
 import React from 'react'
 import { bool, shape, string } from 'prop-types'
+import ReactCalendar from 'react-calendar'
 import styled from 'styled-components'
+
+import dateConfig from './config/date'
 
 import ProjectActivityTile from './ProjectActivityTile'
 import TextArea from './TextArea'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const ProjectNote = ({ editable, data: { author, createdAt, note, project }, id, updateKey, updateProject, user }) => {
-
+const ProjectDate = ({ editable, data: { author, createdAt, date, description, project }, id, updateKey, updateProject, user }) => {
   const saveData = {
     id: id,
-    type: "NOTE",
+    type: "DATE",
     data: {
       author: author,
       createdAt: createdAt,
-      note: note,
+      date: date,
+      description: description,
       project: project
     }
   }
@@ -33,24 +36,29 @@ const ProjectNote = ({ editable, data: { author, createdAt, note, project }, id,
       updateKey={updateKey}>
       <TextArea
         disabled={!editable}
-        value={note}
-        onChange={(e) => updateProject(updateKey + ".data.note", e.target.value)}/>
+        value={description}
+        onChange={(e) => updateProject(updateKey + ".data.description", e.target.value)}/>
+      <ReactCalendar 
+        value={new Date(date)}
+        onChange={(date) => updateProject(updateKey + ".data.date", dateConfig.format(date))}/>
     </ProjectActivityTile>
   )
 }
 //-----------------------------------------------------------------------------
 // Props
 //-----------------------------------------------------------------------------
-ProjectNote.propTypes = {
+ProjectDate.propTypes = {
   editable: bool,
   data: shape({
-    note: string
+    date: string,
+    description: string
   })
 }
-ProjectNote.defaultProps = {
+ProjectDate.defaultProps = {
   editable: false,
   data: {
-    note: "Default Note"
+    date: null,
+    description: "Default Description"
   }
 }
 //-----------------------------------------------------------------------------
@@ -59,4 +67,4 @@ ProjectNote.defaultProps = {
 const Container = styled.div`
 `
 
-export default ProjectNote
+export default ProjectDate

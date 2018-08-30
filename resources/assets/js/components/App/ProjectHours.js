@@ -8,10 +8,10 @@ import ProjectContentContainer from './ProjectContentContainer'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const ProjectFinances = ({ isActiveTab }) => {
+const ProjectHours = ({ isActiveTab }) => {
   return (
     <ProjectContentContainer isActiveTab={isActiveTab}>
-      ProjectFinances
+      ProjectHours
     </ProjectContentContainer>
   )
 }
@@ -20,4 +20,4 @@ const ProjectFinances = ({ isActiveTab }) => {
 //-----------------------------------------------------------------------------
 const Container = styled.div``
 
-export default ProjectFinances
+export default ProjectHours

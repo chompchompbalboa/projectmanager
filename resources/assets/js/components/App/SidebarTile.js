@@ -5,8 +5,8 @@ import React, { Component } from 'react'
 import { func, string } from 'prop-types'
 import styled from 'styled-components'
 
-import sidebarConfig from './config/sidebar'
-import transitionConfig from './config/transition'
+import colors from './config/colors'
+import layout from './config/layout'
 
 import Icon from '../lib/Icon/Icon'
 //-----------------------------------------------------------------------------
@@ -40,9 +40,9 @@ export default class SidebarMainTile extends Component {
         onMouseEnter={() => {this.setState({ hover: true })}}
         onMouseLeave={() => {this.setState({ hover: false })}}>
         <Icon 
-          color={isActiveTile || hover ? sidebarConfig.mainActiveFontColor : sidebarConfig.mainInactiveFontColor}
+          color={isActiveTile || hover ? colors.sidebar.activeFontColor : colors.sidebar.inactiveFontColor}
           icon={icon}
-          size="6vh"/>
+          size="3vh"/>
         <Text>
           {text}
         </Text>
@@ -71,21 +71,22 @@ SidebarMainTile.defaultProps = {
 // Styled Components
 //-----------------------------------------------------------------------------
 const Container = styled.div`
-  padding: 3vh 0;
+  padding: 2vh 0;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: ${props => props.active ? sidebarConfig.mainActiveBackgroundColor : "transparent"};
-  color: ${props => props.active ? sidebarConfig.mainActiveFontColor : sidebarConfig.mainInactiveFontColor};
+  background-color: ${props => props.active ? colors.primary : "transparent"};
+  color: ${props => props.active ? colors.sidebar.activeFontColor : colors.sidebar.inactiveFontColor};
   &:hover {
     cursor: pointer;
-    background-color: ${sidebarConfig.mainActiveBackgroundColor};
-    color: ${sidebarConfig.mainActiveFontColor};
+    background-color: ${colors.primary};
+    color: ${colors.sidebar.activeFontColor};
   }
 `
 
 const Text = styled.div`
   margin-top: 0.5vh;
+  font-size: 0.8em;
 `
