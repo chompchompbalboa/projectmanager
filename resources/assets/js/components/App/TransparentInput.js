@@ -2,21 +2,22 @@
 // Imports
 //-----------------------------------------------------------------------------
 import React from 'react'
-import { func, string } from 'prop-types'
+import { bool, func, string } from 'prop-types'
 import styled from 'styled-components'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const Input = ({ backgroundColor, borderColor, borderRadius, color, margin, placeholder, value, width, onChange }) => {
+const Input = ({ color, disabled, display, fontSize, margin, placeholder, value, width, onChange }) => {
   return (
     <StyledInput
-      backgroundColor={backgroundColor}
-      borderColor={borderColor}
-      borderRadius={borderRadius}
       color={color}
+      disabled={disabled}
+      display={display}
+      fontSize={fontSize}
       margin={margin}
       placeholder={placeholder}
       width={width}
+      value={value}
       onChange={onChange}/>
   )
 }
@@ -24,10 +25,9 @@ const Input = ({ backgroundColor, borderColor, borderRadius, color, margin, plac
 // Props
 //-----------------------------------------------------------------------------
 Input.propTypes = {
-  backgroundColor: string,
-  borderColor: string,
-  borderRadius: string,
   color: string,
+  disabled: bool,
+  fontSize: string,
   margin: string,
   placeholder: string,
   value: string,
@@ -35,11 +35,11 @@ Input.propTypes = {
   onChange: func
 }
 Input.defaultProps = {
-  backgroundColor: "white",
-  borderColor: "white",
-  borderRadius: "1em",
   color: "black",
+  disabled: false,
+  fontSize: "1em",
   margin: "0",
+  padding: "0",
   placeholder: "",
   value: "",
   width: "100%",
@@ -49,16 +49,15 @@ Input.defaultProps = {
 // Styled Components
 //-----------------------------------------------------------------------------
 const StyledInput = styled.input`
+  display: ${props => props.display};
   margin: ${props => props.margin};
-  padding: 0.5em 1em;
+  padding: ${props => props.padding};
   width: ${props => props.width};
-  background-color: ${props => props.backgroundColor};
+  background-color: transparent;
   color: ${props => props.color};
   outline: none;
-  border: 1px solid ${props => props.borderColor};
-  border-radius: ${props => props.borderRadius};
-  font-size: 0.95em;
-  letter-spacing: 0.5px;
+  border: none;
+  font-size: ${props => props.fontSize};
 `
 
 export default Input

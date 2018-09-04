@@ -9,7 +9,6 @@ import colors from './config/colors'
 import layout from './config/layout'
 
 import Icon from '../lib/Icon/Icon'
-import Input from './Input'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------

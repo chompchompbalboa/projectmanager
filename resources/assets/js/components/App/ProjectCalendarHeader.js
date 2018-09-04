@@ -21,7 +21,7 @@ export default class ProjectCalendarHeader extends Component {
     const { 
       goToMonthAfter, 
       goToMonthBefore, 
-      visibleMoment 
+      visibleMonthMoment 
     } = this.props
     const {
       changeMonthAfterHover,
@@ -32,7 +32,7 @@ export default class ProjectCalendarHeader extends Component {
       <Container>
         <InfoContainer>
           <CurrentMonth>
-            {visibleMoment.format('MMMM YYYY')}
+            {visibleMonthMoment.format('MMMM YYYY')}
           </CurrentMonth>
         </InfoContainer>
         <ActionsContainer>
