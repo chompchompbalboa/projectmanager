@@ -64,13 +64,14 @@ export default class ProjectCalendarCellsCellItem extends Component {
     const {
       backgroundColor,
       cell,
-      deleteCalendarItem,
       departments,
       item,
       itemIdBeingEdited,
       text,
       editorCellDate,
       editorVisible,
+      editorOnBottom,
+      handleDeleteButtonClick,
       isTextVisible,
       updateCalendarItem,
       updateEditEndActive,
@@ -108,8 +109,10 @@ export default class ProjectCalendarCellsCellItem extends Component {
             onClick={() => updateEditEndActive(true, itemId)}/>
         </CalendarItem>
         {editorVisible && editorCellDate === cell.dayOfYear() &&
-          <CalendarItemEditor>
-              <CalendarItemEditorContent>
+          <CalendarItemEditor
+            editorOnBottom={editorOnBottom}>
+              <CalendarItemEditorContent
+                editorOnBottom={editorOnBottom}>
               <CalendarItemEditorContentText
                 innerRef={c => this.textInput = c}
                 placeholder="Description"
@@ -129,7 +132,7 @@ export default class ProjectCalendarCellsCellItem extends Component {
                 })}
               </DepartmentsContainer>
               <CalendarItemEditorDeleteButton
-                onClick={() => deleteCalendarItem(item)}>
+                onClick={() => handleDeleteButtonClick(item)}>
                 Delete
               </CalendarItemEditorDeleteButton>
               </CalendarItemEditorContent>
@@ -173,6 +176,7 @@ const CalendarItemEditor = styled.div`
 user-select: none;
 z-index: 1000;
 position: absolute;
+bottom: ${props => props.editorOnBottom ? "auto" : "calc(0.9em + 0.75vh)"};
 margin-top: calc(0.6em / 2 - 1px);
 margin-left: 1%;
 width: 98%;
@@ -184,7 +188,8 @@ background: #ffffff;
 border: 1.25px solid ${colors.containerBorderColor};
 font-size: 0.9em;
 &:after {
-  bottom: 100%;
+  top: ${props => props.editorOnBottom ? "auto" : "100%"};
+  bottom: ${props => props.editorOnBottom ? "100%" : "auto"};
   left: calc(0.65em + 10%);
   border: solid transparent;
   content: " ";
@@ -193,12 +198,14 @@ font-size: 0.9em;
   position: absolute;
   pointer-events: none;
   border-color: rgba(255, 255, 255, 0);
-  border-bottom-color: #ffffff;
+  border-top: ${props => props.editorOnBottom ? "none" : "0.65em solid #ffffff"};
+  border-bottom: ${props => props.editorOnBottom ? "0.65em solid #ffffff" : "transparent"};
   border-width: 0.65em;
   margin-left: -0.65em;
 }
 &:before {
-  bottom: 100%;
+  top: ${props => props.editorOnBottom ? "auto" : "100%"};
+  bottom: ${props => props.editorOnBottom ? "100%" : "auto"};
   left: calc(0.65em + 10%);
   border: solid transparent;
   content: " ";
@@ -207,7 +214,8 @@ font-size: 0.9em;
   position: absolute;
   pointer-events: none;
   border-color: rgba(194, 225, 245, 0);
-  border-bottom-color: ${colors.containerBorderColor};
+  border-top: ${props => props.editorOnBottom ? "transparent" : ("calc(0.65em + 1.25px) solid " + colors.containerBorderColor)};
+  border-bottom: ${props => props.editorOnBottom ? ("calc(0.65em + 1.25px) solid " + colors.containerBorderColor) : "transparent"};
   border-width: calc(0.65em + 1.25px);
   margin-left: calc(-0.65em - 1px);
 }

@@ -19,6 +19,7 @@ export default class ProjectCalendar extends Component {
 
   state = {
     addRangeActive: false,
+    editMilestoneActive: false,
     editStartActive: false,
     editEndActive: false,
     itemIdBeingEdited: null,
@@ -31,6 +32,9 @@ export default class ProjectCalendar extends Component {
       {id: 4, start: moment().subtract(3, 'days').startOf('day'), end: moment().add(5, 'days').startOf('day'), backgroundColor: "red", editorCellDate: null, editorVisible: false, text: "Red"},
       {id: 5, start: moment().subtract(5, 'days').startOf('day'), end: moment().add(7, 'days').startOf('day'), backgroundColor: "green", editorCellDate: null, editorVisible: false, text: "Green"},
       {id: 6, start: moment().subtract(7, 'days').startOf('day'), end: moment().add(8, 'days').startOf('day'), backgroundColor: "blue", editorCellDate: null, editorVisible: false, text: "Blue"}
+    ],
+    milestones: [
+      {id: 0, date: moment().add(10, 'days').startOf('day'), text: "Client Visit"}
     ]
   }
 
@@ -80,6 +84,24 @@ export default class ProjectCalendar extends Component {
     })
   }
 
+  addMilestone = (cell) => {
+    const {
+      milestones
+    } = this.state
+    const nextMilestoneId = _.random(-5000, -1)
+    const nextMilestones = _.clone(milestones)
+    nextMilestones.push({
+      id: nextMilestoneId,
+      date: cell,
+      text: ""
+    })
+    this.setState({
+      milestones: nextMilestones,
+      editMilestoneActive: true,
+      milestoneIdBeingEdited: nextMilestoneId
+    })
+  }
+
   deleteCalendarItem = (deleteItem) => {
     const {
       calendarItems
@@ -88,6 +110,17 @@ export default class ProjectCalendar extends Component {
     _.remove(nextCalendarItems, item => {return (item.id === deleteItem.id)})
     this.setState({
       calendarItems: nextCalendarItems
+    })
+  }
+
+  deleteMilestone = (deleteMilestoneId) => {
+    const {
+      milestones
+    } = this.state
+    let nextMilestones = _.clone(milestones)
+    _.remove(nextMilestones, milestone => {return (milestone.id === deleteMilestoneId)})
+    this.setState({
+      milestones: nextMilestones
     })
   }
 
@@ -111,7 +144,6 @@ export default class ProjectCalendar extends Component {
         addRangeActive,
         calendarItems
       } = this.state
-
       let nextCalendarItems = _.cloneDeep(calendarItems)
       let itemIndex = _.findIndex(nextCalendarItems, ["id", item.id])
       nextCalendarItems[itemIndex].backgroundColor = backgroundColor
@@ -150,24 +182,23 @@ export default class ProjectCalendar extends Component {
     })
   }
 
-  visibleMonthCalendarItems = () => {
-    const {
-      calendarItems,
-      visibleMonthMoment
-    } = this.state
-
-    const firstDayOfMonth = visibleMonthMoment.startOf('month').day()
-    const lastDayOfMonth = visibleMonthMoment.endOf('month').day()
-    let startOfRange = moment(visibleMonthMoment).startOf('month').subtract(firstDayOfMonth + 1, 'days')
-    let endOfRange = moment(visibleMonthMoment).endOf('month').add(6 - lastDayOfMonth, 'days')
-    const visibleMonthRange = moment.range(startOfRange, endOfRange)
-    const visibleMonthItems =  calendarItems.filter(item => {
-      const itemRange = moment.range(item.start, item.end)
-      if(visibleMonthRange.overlaps(itemRange) || itemRange.overlaps(visibleMonthRange)) {
-        return item
-      }
+  updateEditMilestoneActive = (editMilestoneActive, milestoneIdBeingEdited) => {
+    this.setState({
+      editMilestoneActive: editMilestoneActive,
+      milestoneIdBeingEdited: milestoneIdBeingEdited
     })
-    return _.orderBy(visibleMonthItems, 'start')
+  }
+
+  updateMilestone = (milestoneId, text) => {
+    const {
+      milestones
+    } = this.state
+    let nextMilestones = _.cloneDeep(milestones)
+    let milestoneIndex = _.findIndex(nextMilestones, ["id", milestoneId])
+    nextMilestones[milestoneIndex].text = text
+    this.setState({
+      milestones: nextMilestones
+    })
   }
   
   render() {
@@ -179,9 +210,13 @@ export default class ProjectCalendar extends Component {
     } = this.props
     const {
       addRangeActive,
+      calendarItems,
       editStartActive,
       editEndActive,
+      editMilestoneActive,
       itemIdBeingEdited,
+      milestones,
+      milestoneIdBeingEdited,
       visibleMonthMoment
     } = this.state
     return (
@@ -196,17 +231,24 @@ export default class ProjectCalendar extends Component {
           <ProjectCalendarCells 
             addCalendarItemDay={this.addCalendarItemDay}
             addCalendarItemRange={this.addCalendarItemRange}
+            addMilestone={this.addMilestone}
             addRangeActive={addRangeActive}
-            calendarItems={this.visibleMonthCalendarItems()}
+            calendarItems={_.orderBy(calendarItems, 'start')}
             deleteCalendarItem={this.deleteCalendarItem}
+            deleteMilestone={this.deleteMilestone}
             departments={this.departments}
             editStartActive={editStartActive}
             editEndActive={editEndActive}
+            editMilestoneActive={editMilestoneActive}
             itemIdBeingEdited={itemIdBeingEdited}
+            milestones={milestones}
+            milestoneIdBeingEdited={milestoneIdBeingEdited}
             updateAddRangeActive={this.updateAddRangeActive}
             updateCalendarItem={this.updateCalendarItem}
             updateEditEndActive={this.updateEditEndActive}
             updateEditStartActive={this.updateEditStartActive}
+            updateEditMilestoneActive={this.updateEditMilestoneActive}
+            updateMilestone={this.updateMilestone}
             visibleMonthMoment={visibleMonthMoment}/>
         </CalendarContainer>
       </ProjectContentContainer>

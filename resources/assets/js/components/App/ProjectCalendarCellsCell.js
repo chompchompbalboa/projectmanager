@@ -21,18 +21,35 @@ export default class ProjectCalendarCellsCell extends Component {
   state = {
     activeHover: null,
     activeTodayHover: false,
-    activeRangeHover: false
+    activeRangeHover: false,
+    activeStarHover: false
   }
 
   componentDidUpdate = () => {
     const {
       addRangeActive,
       editStartActive,
-      editEndActive
+      editEndActive,
+      editMilestoneActive,
+      isMilestone,
+      milestone,
+      milestoneIdBeingEdited,
     } = this.props
     if (!addRangeActive && !editEndActive && !editStartActive) {
       document.removeEventListener('click', this.handleContainerClickWhenAddRangeIsActive, false)
     }
+    if (isMilestone && editMilestoneActive && milestoneIdBeingEdited === milestone.id) {
+      this.milestoneInput.focus()
+      document.addEventListener('click', this.handleClickOutside, false)
+    }
+  }
+
+  handleClickOutside = () => {
+    const {
+      updateEditMilestoneActive
+    } = this.props
+    updateEditMilestoneActive(false, null)
+    document.removeEventListener('click', this.handleClickOutside, false)
   }
 
   handleContainerMouseEnter = () => {
@@ -96,29 +113,45 @@ export default class ProjectCalendarCellsCell extends Component {
     updateEditStartActive(false, null)
   }
 
+  handleDeleteButtonClick = (item) => {
+    const {
+      deleteCalendarItem
+    } = this.props
+    deleteCalendarItem(item)
+    this.setState({
+      activeHover: false
+    })
+  }
+
   render() {
     const {
       addCalendarItemDay,
       addCalendarItemRange,
+      addMilestone,
       addRangeActive,
       calendarItems,
       cell,
-      deleteCalendarItem,
+      deleteMilestone,
       departments,
       editStartActive,
       editEndActive,
+      editorOnBottom,
+      isMilestone,
       itemsPosition,
       itemIdBeingEdited,
+      milestone,
       updateCalendarItem,
       updateEditEndActive,
       updateEditStartActive,
+      updateMilestone,
       visibleMonthMoment
     } = this.props
 
     const {
       activeHover,
       activeRangeHover,
-      activeTodayHover
+      activeStarHover,
+      activeTodayHover,
     } = this.state
 
     const isInVisibleMonth = cell.month() === visibleMonthMoment.month()
@@ -127,20 +160,32 @@ export default class ProjectCalendarCellsCell extends Component {
       <Container
         isInBackground={addRangeActive || editEndActive || editStartActive}
         isInVisibleMonth={isInVisibleMonth}
+        isMilestone={isMilestone}
         onMouseEnter={this.handleContainerMouseEnter}
         onMouseLeave={this.handleContainerMouseLeave}>
+        <ContentContainer>
         <Header>
-          <Date>
+          <Date
+            isMilestone={isMilestone}>
             {cell.format("D")}
           </Date>
           <ActionsContainer
             isHover={activeHover}>
             <Action
+              onClick={isMilestone ? () => deleteMilestone(milestone.id) : () => addMilestone(cell)}
+              onMouseEnter={() => this.setState({ activeStarHover: true })}
+              onMouseLeave={() => this.setState({ activeStarHover: false })}>
+              <Icon 
+                color={activeHover ? (activeStarHover || isMilestone ? "white" : "black") : "transparent"}
+                icon={isMilestone ? "starFull" : "starEmpty"}
+                size="1em"/>
+            </Action>
+            <Action
               onClick={() => addCalendarItemDay("red", cell, cell)}
               onMouseEnter={() => this.setState({ activeTodayHover: true })}
               onMouseLeave={() => this.setState({ activeTodayHover: false })}>
               <Icon 
-                color={activeHover ? (activeTodayHover ? "white" : "black") : "transparent"}
+                color={activeHover ? (activeTodayHover || isMilestone ? "white" : "black") : "transparent"}
                 icon="plus"
                 size="1em"/>
             </Action>
@@ -149,48 +194,56 @@ export default class ProjectCalendarCellsCell extends Component {
               onMouseEnter={() => this.setState({ activeRangeHover: true })}
               onMouseLeave={() => this.setState({ activeRangeHover: false })}>
               <Icon 
-                color={activeHover ? (activeRangeHover ? "white" : "black") : "transparent"}
+                color={activeHover ? (activeRangeHover || isMilestone ? "white" : "black") : "transparent"}
                 icon="arrowRight"
                 size="1em"/>
             </Action>
           </ActionsContainer>
         </Header>
-          <CalendarItems>
-            {itemsPosition.map((item, index) => {
-              let backgroundColor, text, editorCellDate, editorVisible, isTextVisible
-              if (item === null) {
-                backgroundColor = "transparent"
-                editorCellDate = null
-                editorVisible = false
-                text = null
-                isTextVisible = false
-              }
-              else {
-                backgroundColor = item.backgroundColor
-                editorCellDate = item.editorCellDate
-                editorVisible = item.editorVisible
-                text = item.text
-                isTextVisible = moment(item.start).isSame(cell, 'day') || cell.day() === 0
-              }
-              return (
-                <ProjectCalendarCellsCellItem 
-                  key={index}
-                  backgroundColor={backgroundColor}
-                  cell={cell}
-                  deleteCalendarItem={deleteCalendarItem}
-                  departments={departments}
-                  editorCellDate={editorCellDate}
-                  editorVisible={editorVisible}
-                  item={item}
-                  itemIdBeingEdited={itemIdBeingEdited}
-                  text={text}
-                  isTextVisible={isTextVisible}
-                  updateCalendarItem={updateCalendarItem}
-                  updateEditEndActive={updateEditEndActive}
-                  updateEditStartActive={updateEditStartActive}/>
+        <CalendarItems>
+          {itemsPosition.map((item, index) => {
+            let backgroundColor, text, editorCellDate, editorVisible, isTextVisible
+            if (item === null) {
+              backgroundColor = "transparent"
+              editorCellDate = null
+              editorVisible = false
+              text = null
+              isTextVisible = false
+            }
+            else {
+              backgroundColor = item.backgroundColor
+              editorCellDate = item.editorCellDate
+              editorVisible = item.editorVisible
+              text = item.text
+              isTextVisible = moment(item.start).isSame(cell, 'day') || cell.day() === 0
+            }
+            return (
+              <ProjectCalendarCellsCellItem 
+                key={index}
+                backgroundColor={backgroundColor}
+                cell={cell}
+                departments={departments}
+                editorCellDate={editorCellDate}
+                editorVisible={editorVisible}
+                editorOnBottom={editorOnBottom}
+                handleDeleteButtonClick={this.handleDeleteButtonClick}
+                item={item}
+                itemIdBeingEdited={itemIdBeingEdited}
+                text={text}
+                isTextVisible={isTextVisible}
+                updateCalendarItem={updateCalendarItem}
+                updateEditEndActive={updateEditEndActive}
+                updateEditStartActive={updateEditStartActive}/>
               )
             })}
           </CalendarItems>
+        </ContentContainer>
+          {milestone !== null &&
+            <MilestoneContainer
+              innerRef={c => this.milestoneInput = c}
+              value={milestone.text}
+              onChange={(e) => updateMilestone(milestone.id, e.target.value)}/>
+          }
       </Container>
     )
   }
@@ -204,15 +257,23 @@ cursor: ${props => props.isInBackground ? "pointer" : "auto"};
 width: calc(100% / 7);
 display: flex;
 flex-direction: column;
-justify-content: flex-start;
+justify-content: space-between;
 align-items: flex-start;
-background-color: ${props => props.isInVisibleMonth ? "white" : "rgb(240,240,240)"};
+background-color: ${props => props.isMilestone ? colors.sidebar.background : (props.isInVisibleMonth ? "white" : "rgb(240,240,240)")};
 border-bottom: 0.5px solid rgb(225,225,225);
 border-right: 0.5px solid rgb(225,225,225);
 opacity: ${props => props.isInBackground ? "0.5" : "1"};
 &:hover {
   opacity: 1;
 }
+`
+
+const ContentContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
 `
 
 const Header = styled.div`
@@ -225,6 +286,7 @@ align-items: center;
 const ActionsContainer = styled.div`
 user-select: none;
 width: 100%;
+margin-right: 0.25vw;
 display: flex;
 justify-content: flex-end;
 align-items: center;
@@ -256,8 +318,20 @@ const Date = styled.div`
 user-select: none;
 padding: 0.5vw;
 font-size: 0.9em;
+color: ${props => props.isMilestone ? "white" : "black"};
 `
 
 const CalendarItems = styled.div`
 width: 100%;
+`
+
+const MilestoneContainer = styled.input`
+padding: 0.5vh 0;
+width: 100%;
+border: none;
+outline: none;
+background-color: transparent;
+font-size: 0.8em;
+text-align: center;
+color: white;
 `

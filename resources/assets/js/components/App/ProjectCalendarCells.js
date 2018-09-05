@@ -48,6 +48,19 @@ export default class ProjectCalendarCells extends Component {
     return cells
   }
 
+  setMilestone = (cell, milestones) => {
+    let payload = null
+    milestones.forEach((milestone, index) => {
+      if (milestone.date.isSame(cell, 'day')) {
+        payload = {
+          id: milestone.id,
+          text: milestone.text
+        }
+      }
+    })
+    return payload
+  }
+
   setVisibleEditor = (cellIndex, itemIndex) => {
     const {
       visibleEditor
@@ -72,16 +85,23 @@ export default class ProjectCalendarCells extends Component {
       addCalendarItemDay, 
       addCalendarItemRange, 
       addRangeActive,
+      addMilestone,
       itemIdBeingEdited,
       calendarItems, 
       deleteCalendarItem,
       departments,
+      deleteMilestone,
       editStartActive,
       editEndActive,
+      editMilestoneActive,
+      milestones,
+      milestoneIdBeingEdited,
       updateAddRangeActive,
       updateCalendarItem,
       updateEditEndActive,
       updateEditStartActive,
+      updateEditMilestoneActive,
+      updateMilestone,
       visibleMonthMoment 
     } = this.props
 
@@ -97,9 +117,11 @@ export default class ProjectCalendarCells extends Component {
     // without jumping up and down as other items end / start
     let itemsPosition = []
     let noCalendarItemsInPreviousCell = true
+
+    const cells = this.cells()
     return (
       <Container>
-        {this.cells().map((cell, cellIndex) => {
+        {cells.map((cell, cellIndex) => {
           // Visually separate cells that aren't in the current visible month
           // but are still within the displayed range
           const isInVisibleMonth = cell.month() === visibleMonthMoment.month()
@@ -134,31 +156,42 @@ export default class ProjectCalendarCells extends Component {
               itemsPosition[itemIndex] = null
             }
           })
-
-          // Clean up the itemsPosition array to remove all trailing null elements
   
           // If there aren't any calendar items in the current cell, make sure we
           // reset the positions in the next cell
           noCalendarItemsInPreviousCell = (itemsPosition.every(item => item === null) === true || itemsPosition.length === 0)
+
+          // Set the milestone info, if any
+          const milestone = this.setMilestone(cell, milestones)
+          const isMilestone = milestone !== null
   
           return (
             <ProjectCalendarCellsCell
               key={cellIndex}
               addCalendarItemDay={addCalendarItemDay}
               addCalendarItemRange={addCalendarItemRange}
+              addMilestone={addMilestone}
               addRangeActive={addRangeActive}
               calendarItems={calendarItems}
               cell={cell}
               deleteCalendarItem={deleteCalendarItem}
+              deleteMilestone={deleteMilestone}
               departments={departments}
               editStartActive={editStartActive}
               editEndActive={editEndActive}
+              editMilestoneActive={editMilestoneActive}
+              editorOnBottom={cellIndex < 20}
+              isMilestone={isMilestone}
               itemIdBeingEdited={itemIdBeingEdited}
               itemsPosition={itemsPosition}
+              milestone={milestone}
+              milestoneIdBeingEdited={milestoneIdBeingEdited}
               updateAddRangeActive={updateAddRangeActive}
               updateCalendarItem={updateCalendarItem}
               updateEditEndActive={updateEditEndActive}
               updateEditStartActive={updateEditStartActive}
+              updateEditMilestoneActive={updateEditMilestoneActive}
+              updateMilestone={updateMilestone}
               visibleMonthMoment={visibleMonthMoment}
               />
           )
