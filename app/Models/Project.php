@@ -17,6 +17,7 @@ class Project extends Model
     return [
       ["id" => "ACTIVITY"],
       ["id" => "CALENDAR"],
+      ["id" => "PARTS"],
       ["id" => "PURCHASING"],
       ["id" => "HOURS"],
       ["id" => "FILES"]
@@ -30,7 +31,8 @@ class Project extends Model
   public function getDataAttribute() {
     return [
       "DATE" => $this->dates()->get(),
-      "NOTE" => $this->notes()->get()
+      "MILESTONE" => $this->milestones()->get(),
+      "NOTE" => $this->notes()->get(),
     ];
   }
 
@@ -39,6 +41,13 @@ class Project extends Model
    */
   public function dates() {
     return $this->hasMany('App\Models\Date');
+  }
+
+  /**
+   * Get all the milestones that belong to this project
+   */
+  public function milestones() {
+    return $this->hasMany('App\Models\Milestone');
   }
 
   /**

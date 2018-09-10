@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class NoteCreate extends Migration
+class ProjectCreate extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,14 @@ class NoteCreate extends Migration
      */
     public function up()
     {
-        Schema::create('notes', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('project_id');
-            $table->unsignedInteger('user_id');
-            $table->text('note');
+            $table->unsignedInteger('business_id');
+            $table->string('code');
+            $table->string('name');
             $table->timestamps();
 
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('business_id')->references('id')->on('businesses');
         });
     }
 
@@ -32,6 +31,6 @@ class NoteCreate extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('notes');
+        Schema::dropIfExists('projects');
     }
 }

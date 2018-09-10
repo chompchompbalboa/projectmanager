@@ -17,10 +17,14 @@ class Note extends Model
   }
 
   public function getDataAttribute() {
+    $author = $this->author()->first();
     return [
-      "author" => $this->author()->first(),
+      "author" => [
+        "id" => $author->id,
+        "name" => $author->name,
+      ],
+      "note" => $this->note,
       "createdAt" => $this->created_at->toDateTimeString(),
-      "note" => $this->note
     ];
   }
 
