@@ -12,28 +12,36 @@ import AppContentHeader from './AppContentHeader'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const ProjectHeader = ({ activeProject }) => {
+const BusinessHeader = ({ business }) => {
 
   return (
-    <AppContentHeader header={activeProject.name}>
-      {activeProject.code}
+    <AppContentHeader header={business.name}>
+      <Address>
+        818 S. Dakota St.<br />
+        Seattle, WA 98108
+      </Address>
     </AppContentHeader>
   )
 }
 //-----------------------------------------------------------------------------
 // Props
 //-----------------------------------------------------------------------------
-ProjectHeader.propTypes = {
-  activeProject: shape({
-    code: string,
+BusinessHeader.propTypes = {
+  business: shape({
     name: string
   })
 }
-ProjectHeader.defaultProps = {
-  activeProject: {
-    code: "000000",
-    name: "Default Project"
+BusinessHeader.defaultProps = {
+  business: {
+    name: "Default Business"
   }
 }
+//-----------------------------------------------------------------------------
+// Styled Components
+//-----------------------------------------------------------------------------
+const Address = styled.div`
+  margin: 1vh 0;
+  font-size: 1.1em;
+`
 
-export default ProjectHeader
+export default BusinessHeader

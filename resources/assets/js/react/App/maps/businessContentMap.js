@@ -1,25 +1,21 @@
 //-----------------------------------------------------------------------------
 // Imports
 //-----------------------------------------------------------------------------
-import ProjectActivityQuestion from '../ProjectActivityQuestion'
-import ProjectActivityUpdate from '../ProjectActivityUpdate'
+import ProjectFiles from '../ProjectFiles'
 //-----------------------------------------------------------------------------
 // Export
 //-----------------------------------------------------------------------------
 export default {
-  UPDATE: {
-    component: ProjectActivityUpdate,
-    text: "Update",
-    data: {
-      text: ""
-    }
+  DASHBOARD: {
+    text: "Dashboard",
+    component: ProjectFiles
   },
-  QUESTION: {
-    component: ProjectActivityQuestion,
-    text: "Question",
-    data: {
-      question: "",
-      answer: ""
-    }
+  EMPLOYEES: {
+    text: "Employees",
+    component: ProjectFiles
+  },
+  PROJECTS: {
+    text: "Projects",
+    component: ProjectFiles
   },
 }

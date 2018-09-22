@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 use App\Models\Date;
-use App\Models\Note;
 use App\Models\Project;
+use App\Models\Question;
+use App\Models\Update;
 
 class DataController extends Controller
 {
@@ -27,7 +28,48 @@ class DataController extends Controller
   {
     return [
       'user' => $this->user,
+      'business' => $this->user->employers()->first(),
       'projects' => $this->user->projects()
+    ];
+  }
+
+  /**
+   * Save data recieved from the front end
+   */
+  public function deleteData(Request $request)
+  {
+    switch($request->type) {  
+
+      case "QUESTION":
+        $question = Question::find($request->id);
+        if(!is_null($question)) {
+          if ($question->delete()) {
+            return $this->deleteDataResponse(true);
+          }
+        }
+        return $this->deleteDataResponse(false);
+      break;
+
+      case "UPDATE":
+        $update = Update::find($request->id);
+        if(!is_null($update)) {
+          if ($update->delete()) {
+            return $this->deleteDataResponse(true);
+          }
+        }
+        return $this->deleteDataResponse(false);
+      break;
+    }
+  }
+
+
+  /**
+   * Build the response object deleteData returns
+   */
+  private function deleteDataResponse(bool $success) 
+  {
+    return [
+      "success" => $success
     ];
   }
 
@@ -36,57 +78,58 @@ class DataController extends Controller
    */
   public function saveData(Request $request)
   {
-    switch($request->type) {      
-    case "DATE":
-      if(is_null($request->id)) {
-        $date = new Date;
-      }
-      else {
-        $date = Date::find($request->id);
-      }
-      if(!is_null($date)) {
-        $date->date = $request->data['date'];
-        $date->description = $request->data['description'];
-        $date->project_id = $request->data['project']['id'];
-        $date->user_id = $request->data['author']['id'];
-        $date->created_at = $request->data['createdAt'];
-        if ($date->save()) {
-          return [
-            "success" => true,
-            "project" => Project::find($date->project_id)
-          ];
-        }
-      }
-      return [
-        "success" => false,
-        "project" => Project::find($request['project']['id'])
-      ];
-    break;
+    switch($request->type) {  
 
-      case "NOTE":
-        if(is_null($request->id)) {
-          $note = new Note;
+      case "QUESTION":
+        if($request->id < 0) {
+          $question = new Question;
         }
         else {
-          $note = Note::find($request->id);
+          $question = Question::find($request->id);
         }
-        if(!is_null($note)) {
-          $note->note = $request->data['note'];
-          $note->project_id = $request->data['project']['id'];
-          $note->user_id = $request->data['author']['id'];
-          $note->created_at = $request->data['createdAt'];
-          if ($note->save()) {
-            return [
-              "success" => true,
-              "project" => Project::find($note->project_id)
-            ];
+        if(!is_null($question)) {
+          $question->question = $request->data['question'];
+          $question->answer = $request->data['answer'];
+          $question->project_id = $request->data['project']['id'];
+          $question->user_id = $request->data['author']['id'];
+          $question->created_at = $request->data['createdAt'];
+          if ($question->save()) {
+            return $this->saveDataResponse(true, $question);
           }
         }
-        return [
-          "success" => false,
-          "project" => Project::find($request['project']['id'])
-        ];
+        return $this->saveDataResponse(false, $question);
+      break;
+
+      case "UPDATE":
+        if($request->id < 0) {
+          $update = new Update;
+        }
+        else {
+          $update = Update::find($request->id);
+        }
+        if(!is_null($update)) {
+          $update->text = $request->data['text'];
+          $update->project_id = $request->data['project']['id'];
+          $update->user_id = $request->data['author']['id'];
+          $update->created_at = $request->data['createdAt'];
+          if ($update->save()) {
+            return $this->saveDataResponse(true, $update);
+          }
+        }
+        return $this->saveDataResponse(false, $update);
       break;
     }
+  }
+
+
+  /**
+   * Build the response object saveData returns
+   */
+  private function saveDataResponse(bool $success, $data) 
+  {
+    return [
+      "success" => $success,
+      "data" => $data
+    ];
   }
 }

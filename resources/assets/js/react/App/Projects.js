@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 import React, { Component } from 'react'
 import { arrayOf, bool, shape, string } from 'prop-types'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import _ from 'lodash'
 
@@ -12,6 +13,12 @@ import ProjectsTabs from './ProjectsTabs'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
+@connect(
+  state => ({
+    projects: state.projects,
+    user: state.user
+  })
+)
 export default class Projects extends Component {
 
   state = {
@@ -127,6 +134,7 @@ export default class Projects extends Component {
             <Project
               key={index} 
               activeProject={activeProject}
+              activeProjectIndex={index}
               isActiveTab={activeTab === index}
               projects={projects}
               setActiveProject={this.setActiveProject}

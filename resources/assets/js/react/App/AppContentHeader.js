@@ -7,33 +7,39 @@ import styled from 'styled-components'
 
 import colors from './config/colors'
 import layout from './config/layout'
-
-import AppContentHeader from './AppContentHeader'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const ProjectHeader = ({ activeProject }) => {
+const AppContentHeader = ({ header, children }) => {
 
   return (
-    <AppContentHeader header={activeProject.name}>
-      {activeProject.code}
-    </AppContentHeader>
+    <Container>
+      <Header>{header}</Header>
+      <Subheader>{children}</Subheader>
+    </Container>
   )
 }
 //-----------------------------------------------------------------------------
 // Props
 //-----------------------------------------------------------------------------
-ProjectHeader.propTypes = {
-  activeProject: shape({
-    code: string,
-    name: string
-  })
+AppContentHeader.propTypes = {
+  header: string
 }
-ProjectHeader.defaultProps = {
-  activeProject: {
-    code: "000000",
-    name: "Default Project"
-  }
+AppContentHeader.defaultProps = {
+  header: "Default Header"
 }
+//-----------------------------------------------------------------------------
+// Styled Components
+//-----------------------------------------------------------------------------
+const Container = styled.div`
+  width: 100%;
+  padding: 1.5vh 1vh;
+`
 
-export default ProjectHeader
+const Header = styled.div`
+  font-size: 1.4em;
+  font-weight: bold`
+
+const Subheader = styled.div``
+
+export default AppContentHeader

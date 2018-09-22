@@ -19,6 +19,8 @@ export default {
     leftColumnWidth: "12.5em",
     tabsHeight: "2.25em"
   },
+
+  scrollbarWidth: "17px",
   
   sidebar: {
     width: "4.5vw"

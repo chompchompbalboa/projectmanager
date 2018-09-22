@@ -7,19 +7,20 @@ import styled from 'styled-components'
 import _ from 'lodash'
 
 import date from './config/date'
+import layout from './config/layout'
 
 import projectActivityMap from './maps/projectActivityMap'
 
 import ProjectContentContainer from './ProjectContentContainer'
-import ProjectActivityHeader from './ProjectActivityHeader'
+import ProjectActivityAddAndFilter from './ProjectActivityAddAndFilter'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
 export default class ProjectActivity extends Component {
 
   state = {
+    focusedTile: null,
     hiddenTypes: [
-      "DATE"
     ]
   }
 
@@ -51,6 +52,7 @@ export default class ProjectActivity extends Component {
   addToActivityList = (typeBeingAdded) => {
     const {
       activeProject,
+      activeProjectIndex,
       updateProject,
       user
     } = this.props
@@ -62,17 +64,24 @@ export default class ProjectActivity extends Component {
       id: activeProject.id 
     } // Set the project id to the current project
     let nextActiveProjectArrayForTheTypeBeingAdded = (
-      typeof(activeProject.data[typeSettings.dataKey]) !== "undefined"
-      ? activeProject.data[typeSettings.dataKey].slice()
+      typeof(activeProject.data[typeBeingAdded]) !== "undefined"
+      ? activeProject.data[typeBeingAdded].slice()
       : []
     ) // Copy the current data array for the type being added or initialize it with an empty array if it doesn't exist
+    const newItemId = _.random(-5000, -1)
     nextActiveProjectArrayForTheTypeBeingAdded.push({
       type: typeBeingAdded,
-      id: null,
+      id: newItemId,
       data: newItemData,
       editable: true
     }) // Push the new item to the data array
-    updateProject("data." + typeSettings.dataKey, nextActiveProjectArrayForTheTypeBeingAdded)
+    updateProject(activeProjectIndex, "data." + typeBeingAdded, nextActiveProjectArrayForTheTypeBeingAdded)
+    if(this.isItemTypeHidden(typeBeingAdded)) {
+      this.toggleTypeFilter(typeBeingAdded)
+    }
+    this.setState({
+      focusedTile: typeBeingAdded + "-" + newItemId
+    })
   }
 
   isItemEditable = (data, editable, user) => {
@@ -86,21 +95,21 @@ export default class ProjectActivity extends Component {
     const {
       hiddenTypes
     } = this.state
-    return _.indexOf(hiddenTypes, type) === -1
+    return _.indexOf(hiddenTypes, type) > -1
   }
 
-  toggleFilterOption = (option) => {
+  toggleTypeFilter = (type) => {
     const {
       hiddenTypes
     } = this.state
     let nextHideTypes =_.clone(hiddenTypes)
     // If the type is currently visible, turn it off
-    if(!this.isItemTypeHidden(option) && nextHideTypes.length > 0) {
-      nextHideTypes = _.pull(nextHideTypes, option)
+    if(this.isItemTypeHidden(type)) {
+      nextHideTypes = _.pull(nextHideTypes, type)
     }
     // If it's off, turn it on
     else {
-      nextHideTypes.push(option)
+      nextHideTypes.push(type)
     }
     this.setState({
       hiddenTypes: nextHideTypes
@@ -111,23 +120,24 @@ export default class ProjectActivity extends Component {
     const { 
       isActiveTab, 
       activeProject, 
+      activeProjectIndex,
       updateProject, 
       user 
     } = this.props
     const {
+      focusedTile,
       hiddenTypes
     } = this.state
+
+    const activityList = this.activityList()
+    const activityListLength = activityList.length
+
     return (
       <ProjectContentContainer 
-        isActiveTab={isActiveTab}>
-        <ProjectActivityHeader
-          activeProject={activeProject}
-          addToActivityList={this.addToActivityList}
-          hiddenTypes={hiddenTypes}
-          toggleFilterOption={this.toggleFilterOption}
-          updateProject={updateProject}
-          user={user}/>
-        {this.activityList().map((timelineItem, index) => {
+        isActiveTab={isActiveTab}
+        justifyContent="space-between">
+        <ProjectActivityItems>
+        {activityList.map((timelineItem, index) => {
           const {
             data,
             editable,
@@ -139,10 +149,14 @@ export default class ProjectActivity extends Component {
             return React.createElement(
               projectActivityMap[type].component,
               {
-                key: index,
+                key: type + "-" + id,
                 id: id,
+                activeProjectIndex: activeProjectIndex,
                 data: data,
-                editable: this.isItemEditable(data, editable, user),
+                isEditable: this.isItemEditable(data, editable, user),
+                isFirst: index === 0,
+                isFocused: type + "-" + id === focusedTile,
+                isLast: index === activityListLength - 1,
                 updateKey: updateKey,
                 updateProject: updateProject,
                 user: user
@@ -150,7 +164,30 @@ export default class ProjectActivity extends Component {
             )
           }
         })}
+        </ProjectActivityItems>
+        <ProjectActivityControls>
+          <ProjectActivityAddAndFilter
+            activeProject={activeProject}
+            addToActivityList={this.addToActivityList}
+            hiddenTypes={hiddenTypes}
+            toggleTypeFilter={this.toggleTypeFilter}
+            updateProject={updateProject}
+            user={user}/>
+        </ProjectActivityControls>
       </ProjectContentContainer>
     )
   }
 }
+
+const ProjectActivityItems = styled.div`
+  padding-right: calc(${layout.scrollbarWidth} + ${layout.project.containerPadding});
+  width: calc(100% - 10vw + ${layout.scrollbarWidth});
+  height: 100%;
+  overflow-y: scroll;
+`
+
+const ProjectActivityControls = styled.div`
+  position: sticky;
+  top: 0;
+  width: 10vw;
+`

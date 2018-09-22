@@ -2,19 +2,30 @@
 // Imports
 //-----------------------------------------------------------------------------
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import _ from 'lodash'
+
+import { updateProject } from './actions/projectsActions'
 
 import projectContentMap from './maps/projectContentMap'
 
 import colors from './config/colors'
 import layout from './config/layout'
 
+import AppContentLeftColumn from './AppContentLeftColumn'
+import AppContentRightColumn from './AppContentRightColumn'
 import ProjectHeader from './ProjectHeader'
 import ProjectTabs from './ProjectTabs'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
+@connect(
+  state => ({}),
+  dispatch => ({
+    updateProject: (projectIndex, key, value) => dispatch(updateProject(projectIndex, key, value))
+  })
+)
 export default class Project extends Component {
 
   state = {
@@ -32,7 +43,9 @@ export default class Project extends Component {
 
   buildProjectContent = () => {
     const {
-      user
+      activeProjectIndex,
+      user,
+      updateProject
     } = this.props
     const {
       activeProject,
@@ -45,7 +58,8 @@ export default class Project extends Component {
           key: index,
           isActiveTab: (activeTab === tab.id),
           activeProject: activeProject,
-          updateProject: this.updateProject,
+          activeProjectIndex: activeProjectIndex,
+          updateProject: updateProject,
           user: user
         }
       )
@@ -55,16 +69,6 @@ export default class Project extends Component {
   changeActiveTab = (nextActiveTab) => {
     this.setState({
       activeTab: nextActiveTab
-    })
-  }
-
-  updateProject = (key, value) => {
-    const {
-      activeProject
-    } = this.state
-    const nextActiveProject = _.set(Object.assign({}, activeProject), key, value)
-    this.setState({
-      activeProject: nextActiveProject
     })
   }
 
@@ -81,7 +85,8 @@ export default class Project extends Component {
     return (
       <Container
         isActiveTab={isActiveTab}>
-        <LeftColumn>
+        <AppContentLeftColumn
+          contentHasTabs>
           <ProjectHeader 
             activeProject={activeProject}
             project={projects}/>
@@ -90,10 +95,10 @@ export default class Project extends Component {
             changeActiveTab={this.changeActiveTab}
             projectId={activeProject.id}
             tabs={activeProject.tabs}/>
-        </LeftColumn>
-        <RightColumn>
+        </AppContentLeftColumn>
+        <AppContentRightColumn>
           {this.buildProjectContent()}
-        </RightColumn>
+        </AppContentRightColumn>
       </Container>
     )
   }
@@ -103,24 +108,4 @@ export default class Project extends Component {
 //-----------------------------------------------------------------------------
 const Container = styled.div`
   display: ${props => props.isActiveTab ? "block" : "none"};
-`
-
-const LeftColumn = styled.div`
-  position: fixed;
-  top: calc(${layout.project.tabsHeight} + ${layout.project.containerPadding});
-  left: calc(${layout.sidebar.width} + ${layout.project.containerPadding});
-  width: ${layout.project.leftColumnWidth};
-  height: 100vh;
-  overflow-y: scroll;
-  background-color: ${colors.siteBackground};
-`
-
-const RightColumn = styled.div`
-  position: fixed;
-  top: calc(${layout.project.tabsHeight} + ${layout.project.containerPadding});
-  left: calc(${layout.sidebar.width} + ${layout.project.containerPadding} + ${layout.project.leftColumnWidth} + ${layout.project.containerPadding});
-  width: calc(100vw - ${layout.sidebar.width} - ${layout.project.containerPadding} - ${layout.project.leftColumnWidth} - ${layout.project.containerPadding} - ${layout.project.containerPadding});
-  height: calc(100vh - ${layout.project.tabsHeight} - ${layout.project.containerPadding} - ${layout.project.containerPadding});
-  overflow-y: scroll;
-  background-color: ${colors.siteBackground};
 `

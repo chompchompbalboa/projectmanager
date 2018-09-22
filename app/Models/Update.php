@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Note extends Model
+class Update extends Model
 {
   // Define which attributes will be visible
   protected $visible = ['id', 'data', 'type'];
@@ -13,7 +13,7 @@ class Note extends Model
   protected $appends = ['data', 'type'];
 
   public function getTypeAttribute() {
-    return "NOTE";
+    return "UPDATE";
   }
 
   public function getDataAttribute() {
@@ -23,7 +23,7 @@ class Note extends Model
         "id" => $author->id,
         "name" => $author->name,
       ],
-      "note" => $this->note,
+      "text" => $this->text,
       "createdAt" => $this->created_at->toDateTimeString(),
     ];
   }

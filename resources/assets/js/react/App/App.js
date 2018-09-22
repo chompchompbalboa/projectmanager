@@ -5,20 +5,20 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
+import { setBusinessStore } from './actions/businessActions'
 import { setProjectsStore } from './actions/projectsActions'
 import { setUserStore } from './actions/userActions'
 
+import Business from './Business'
 import Projects from './Projects'
 import Sidebar from './Sidebar'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
 @connect(
-  state => ({
-    projects: state.projects,
-    user: state.user
-  }),
+  null,
   dispatch => ({
+    setBusinessStore: (nextStore) => dispatch(setBusinessStore(nextStore)),
     setProjectsStore: (nextStore) => dispatch(setProjectsStore(nextStore)),
     setUserStore: (nextStore) => dispatch(setUserStore(nextStore)),
   })
@@ -26,7 +26,7 @@ import Sidebar from './Sidebar'
 export default class App extends Component {
 
   state = {
-    activeContent: 'PROJECTS',
+    activeContent: 'BUSINESS',
     loading: true
   }
 
@@ -36,6 +36,7 @@ export default class App extends Component {
 
   fetchInitialData = () => {
     const {
+      setBusinessStore,
       setProjectsStore,
       setUserStore
     } = this.props
@@ -51,6 +52,7 @@ export default class App extends Component {
     }}).then(response => {
       return response.json()
     }).then(response => {
+      setBusinessStore(response.business)
       setProjectsStore(response.projects)
       setUserStore(response.user)
       this.setState({
@@ -71,22 +73,13 @@ export default class App extends Component {
       loading
     } = this.state
 
-    const {
-      projects, 
-      user
-    } = this.props
-
     return (
       <Container>
         <Sidebar 
           activeContent={activeContent} 
           setActiveContent={this.setActiveContent}/>
-        {!loading &&
-          <Projects 
-            isActiveContent={activeContent === 'PROJECTS'}
-            projects={projects}
-            user={user}/>
-        }
+        {!loading && <Projects isActiveContent={activeContent === 'PROJECTS'}/>}
+        {!loading && <Business isActiveContent={activeContent === 'BUSINESS'}/>}
       </Container>
     )
   }

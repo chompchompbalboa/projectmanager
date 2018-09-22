@@ -2,15 +2,17 @@
 // Imports
 //-----------------------------------------------------------------------------
 import React from 'react'
+import { bool } from 'prop-types'
 import styled from 'styled-components'
 
+import colors from './config/colors'
 import layout from './config/layout'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const AppContent = ({ isActiveContent, children }) => {
+const AppContentLeftColumn = ({ children }) => {
   return (
-    <Container isActiveContent={isActiveContent}>
+    <Container>
       {children}
     </Container>
   )
@@ -19,8 +21,13 @@ const AppContent = ({ isActiveContent, children }) => {
 // Styled Components
 //-----------------------------------------------------------------------------
 const Container = styled.div`
-  display: ${props => props.isActiveContent ? "block" : "none"};
-  padding-left: ${layout.sidebar.width};
+position: fixed;
+top: calc(${layout.project.tabsHeight} + ${layout.project.containerPadding});
+left: calc(${layout.sidebar.width} + ${layout.project.containerPadding});
+width: ${layout.project.leftColumnWidth};
+height: 100vh;
+overflow-y: scroll;
+background-color: ${colors.siteBackground};
 `
 
-export default AppContent
+export default AppContentLeftColumn

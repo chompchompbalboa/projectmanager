@@ -21,7 +21,10 @@ Route::middleware(['auth'])->group(function() {
   // Initial Data
   Route::get('/app/initial-data', 'DataController@buildInitialData');
 
-  // Save
+  // Delete Data
+  Route::delete('/app/delete', 'DataController@deleteData');
+
+  // Save Data
   Route::put('/app/save', 'DataController@saveData');
 });
 

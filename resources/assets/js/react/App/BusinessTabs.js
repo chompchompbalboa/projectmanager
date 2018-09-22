@@ -5,20 +5,27 @@ import React from 'react'
 import { arrayOf, func, number, shape, string } from 'prop-types'
 import styled from 'styled-components'
 
-import projectContentMap from './maps/projectContentMap'
+import businessContentMap from './maps/businessContentMap'
 
 import AppContentTabs from './AppContentTabs'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const ProjectTabs = ({ activeTab, changeActiveTab, tabs }) => {
+const BusinessTabs = ({ activeTab, changeActiveTab }) => {
+
+  const tabs = [
+    {id: "DASHBOARD"},
+    {id: "EMPLOYEES"},
+    {id: "PROJECTS"}
+  ]
+
   return (
     <AppContentTabs 
       activeTab={activeTab}
       changeActiveTab={changeActiveTab}
-      map={projectContentMap}
+      map={businessContentMap}
       tabs={tabs}/>
   )
 }
 
-export default ProjectTabs
+export default BusinessTabs

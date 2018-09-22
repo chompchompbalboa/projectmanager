@@ -32,7 +32,8 @@ class Project extends Model
     return [
       "DATE" => $this->dates()->get(),
       "MILESTONE" => $this->milestones()->get(),
-      "NOTE" => $this->notes()->get(),
+      "QUESTION" => $this->questions()->get(),
+      "UPDATE" => $this->updates()->get(),
     ];
   }
 
@@ -51,9 +52,16 @@ class Project extends Model
   }
 
   /**
-   * Get all the notes that belong to this project
+   * Get all the questions that belong to this project
    */
-  public function notes() {
-    return $this->hasMany('App\Models\Note');
+  public function questions() {
+    return $this->hasMany('App\Models\Question');
+  }
+
+  /**
+   * Get all the updates that belong to this project
+   */
+  public function updates() {
+    return $this->hasMany('App\Models\Update');
   }
 }

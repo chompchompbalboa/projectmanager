@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class NoteTableSeeder extends Seeder
+class QuestionTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,6 +11,6 @@ class NoteTableSeeder extends Seeder
      */
     public function run()
     {
-      factory(App\Models\Note::class, 20000)->create();
+      factory(App\Models\Question::class, 20000)->create();
     }
 }
