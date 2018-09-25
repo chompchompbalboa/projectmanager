@@ -5,6 +5,9 @@ import React, { Component } from 'react'
 import { bool, shape, string } from 'prop-types'
 import styled from 'styled-components'
 
+import DropdownEmployees from './DropdownEmployees'
+import ProjectActivityDescriptionName from './ProjectActivityDescriptionName'
+import ProjectActivityDescriptionText from './ProjectActivityDescriptionText'
 import ProjectActivityTile from './ProjectActivityTile'
 import ProjectActivityTextarea from './ProjectActivityTextarea'
 //-----------------------------------------------------------------------------
@@ -13,8 +16,39 @@ import ProjectActivityTextarea from './ProjectActivityTextarea'
 export default class ProjectActivityQuestion extends Component {
 
   state = {
+    to: this.props.data.to,
     question: this.props.data.question,
     answer: this.props.data.answer
+  }
+
+  description = () => {
+    const {
+      data: {
+        author,
+        to
+      },
+      isFocused
+    } = this.props
+    return (
+      <React.Fragment>
+        <ProjectActivityDescriptionText>
+          <ProjectActivityDescriptionName>{author.name}</ProjectActivityDescriptionName>
+          &nbsp;asked&nbsp;
+          {to !== null
+          ? <ProjectActivityDescriptionName>{to.name}</ProjectActivityDescriptionName>
+          : <DropdownEmployees onOptionSelect={this.updateTo} focus={isFocused}/>
+          }
+          &nbsp;a question
+        </ProjectActivityDescriptionText>
+      </React.Fragment>
+    )
+  }
+
+  updateTo = (option) => {
+    console.log(option)
+    this.setState({
+      to: option
+    })
   }
 
   render() {
@@ -22,7 +56,7 @@ export default class ProjectActivityQuestion extends Component {
       data: { 
         author, 
         createdAt, 
-        project 
+        project
       }, 
       id, 
       isEditable, 
@@ -31,6 +65,7 @@ export default class ProjectActivityQuestion extends Component {
     } = this.props
 
     const {
+      to,
       question, 
       answer, 
     } = this.state
@@ -41,6 +76,7 @@ export default class ProjectActivityQuestion extends Component {
       data: {
         author: author,
         createdAt: createdAt,
+        to: to,
         question: question,
         answer: answer,
         project: project
@@ -49,22 +85,25 @@ export default class ProjectActivityQuestion extends Component {
 
     return (
       <ProjectActivityTile
+        description={this.description()}
         icon="question"
         isEditable={isEditable}
-        message="asked a question"
         tileData={tileData}
         to={null}
         {...props}>
         <ProjectActivityTextarea
           key={id + "-question"}
-          focus={isFocused}
-          disabled={!isEditable}
+          focus={false}
+          isEditable={isEditable}
+          placeholder="Question"
           value={question}
           onChange={(e) => this.setState({ question: e.target.value })}/>
         <ProjectActivityTextarea
           key={id + "-answer"}
           focus={false}
-          disabled={!isEditable}
+          isEditable={isEditable}
+          placeholder={isEditable ? "Answer" : ""}
+          rows={isEditable ? 2 : 1}
           value={answer}
           onChange={(e) => this.setState({ answer: e.target.value })}/>
       </ProjectActivityTile>

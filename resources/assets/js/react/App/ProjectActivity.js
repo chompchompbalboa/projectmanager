@@ -11,7 +11,7 @@ import layout from './config/layout'
 
 import projectActivityMap from './maps/projectActivityMap'
 
-import ProjectContentContainer from './ProjectContentContainer'
+import AppContentRightColumnContent from './AppContentRightColumnContent'
 import ProjectActivityAddAndFilter from './ProjectActivityAddAndFilter'
 //-----------------------------------------------------------------------------
 // Component
@@ -85,7 +85,7 @@ export default class ProjectActivity extends Component {
   }
 
   isItemEditable = (data, editable, user) => {
-    if (editable || user.id === data.author.id) {
+    if (editable) {
       return true
     }
     return false
@@ -133,7 +133,7 @@ export default class ProjectActivity extends Component {
     const activityListLength = activityList.length
 
     return (
-      <ProjectContentContainer 
+      <AppContentRightColumnContent 
         isActiveTab={isActiveTab}
         justifyContent="space-between">
         <ProjectActivityItems>
@@ -174,7 +174,7 @@ export default class ProjectActivity extends Component {
             updateProject={updateProject}
             user={user}/>
         </ProjectActivityControls>
-      </ProjectContentContainer>
+      </AppContentRightColumnContent>
     )
   }
 }

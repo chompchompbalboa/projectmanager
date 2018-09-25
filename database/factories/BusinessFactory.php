@@ -15,7 +15,6 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Models\Business::class, function (Faker $faker) {
     return [
-        'name' => $faker->company,
-        'owner_id' => App\Models\User::all()->random()->id
+        'name' => $faker->company
     ];
 });

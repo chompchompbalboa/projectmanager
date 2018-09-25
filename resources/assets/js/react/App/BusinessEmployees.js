@@ -4,15 +4,18 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import AppContentRightColumnContent from './AppContentRightColumnContent'
 import UnderConstruction from './UnderConstruction'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const BoilerplateStateless = ({}) => {
+const BusinessEmployees = ({ business, isActiveTab }) => {
   return (
-    <Container>
-      <UnderConstruction />
-    </Container>
+    <AppContentRightColumnContent
+      isActiveTab={isActiveTab}>
+      <UnderConstruction 
+        from="BusinessEmployees"/>
+    </AppContentRightColumnContent>
   )
 }
 //-----------------------------------------------------------------------------
@@ -20,4 +23,4 @@ const BoilerplateStateless = ({}) => {
 //-----------------------------------------------------------------------------
 const Container = styled.div``
 
-export default BoilerplateStateless
+export default BusinessEmployees

@@ -5,6 +5,8 @@ import React, { Component } from 'react'
 import { bool, shape, string } from 'prop-types'
 import styled from 'styled-components'
 
+import ProjectActivityDescriptionName from './ProjectActivityDescriptionName'
+import ProjectActivityDescriptionText from './ProjectActivityDescriptionText'
 import ProjectActivityTile from './ProjectActivityTile'
 import ProjectActivityTextarea from './ProjectActivityTextarea'
 //-----------------------------------------------------------------------------
@@ -14,6 +16,22 @@ export default class ProjectActivityUpdate extends Component {
 
   state = {
     text: this.props.data.text
+  }
+
+  description = () => {
+    const {
+      data: {
+        author
+      }
+    } = this.props
+    return (
+      <React.Fragment>
+        <ProjectActivityDescriptionText>
+          <ProjectActivityDescriptionName>{author.name}</ProjectActivityDescriptionName>
+          &nbsp;wrote an update
+        </ProjectActivityDescriptionText>
+      </React.Fragment>
+    )
   }
 
   render() {
@@ -46,15 +64,17 @@ export default class ProjectActivityUpdate extends Component {
 
     return (
       <ProjectActivityTile
+        description={this.description()}
         icon="update"
         isEditable={isEditable}
-        message="wrote an update"
         tileData={tileData}
         to={null}
         {...props}>
         <ProjectActivityTextarea
           focus={isFocused}
-          disabled={!isEditable}
+          isEditable={isEditable}
+          placeholder="Update"
+          rows={isEditable ? 3 : 1}
           value={text}
           onChange={(e) => this.setState({ text: e.target.value })}/>
       </ProjectActivityTile>

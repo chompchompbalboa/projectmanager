@@ -51,7 +51,7 @@ export default class ProjectActivityTile extends Component {
     deleteProjectData(activeProjectIndex, tileData.type, tileData.id)
     if(tileData.id > 0) {
       const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      fetch('/app/delete', {
+      fetch('/app/project/delete', {
         method: "DELETE",
         body: JSON.stringify(tileData),
         credentials: "same-origin",
@@ -80,7 +80,7 @@ export default class ProjectActivityTile extends Component {
       updateKey
     } = this.props
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-    fetch('/app/save', {
+    fetch('/app/project/save', {
       method: "PUT",
       body: JSON.stringify(tileData),
       credentials: "same-origin",
@@ -103,6 +103,7 @@ export default class ProjectActivityTile extends Component {
 
   render() {
     const { 
+      description,
       isEditable,
       isFirst,
       isLast,
@@ -129,8 +130,7 @@ export default class ProjectActivityTile extends Component {
         <ContentContainer>
           <Header>
             <Description>
-              <Author>{tileData.data.author.name}</Author>
-              <Message>&nbsp;{message}</Message>
+              {description}
             </Description>
             <Date>
               <CreatedAt>{moment(tileData.data.createdAt).format('MMMM Do, h:mm a')}</CreatedAt>
@@ -188,7 +188,7 @@ const IconContainer = styled.div`
 
 const ContentContainer = styled.div`
   margin: 1vh 0;
-  padding: 1vw;
+  padding: 1vw 1vw 0.5vw 1vw;
   width: 100%;
   background-color: white;
   border: 1px solid ${colors.containerBorderColor};
@@ -201,22 +201,6 @@ const Header = styled.div`
 
 const Description = styled.div`
   display: flex;
-`
-
-const Author = styled.div`
-  font-weight: 700;
-`
-
-const Message = styled.div``
-
-const Content = styled.div`
-  width: 100%;
-`
-
-const Body = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
 `
 
 const Date = styled.div`
@@ -239,6 +223,16 @@ const Divider = styled.div`
   width: 100%;
 `
 
+const Body = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`
+
+const Content = styled.div`
+  width: calc(85% - 1vw);
+`
+
 const Actions = styled.div`
   width: 15%;
   display: ${props => props.visible ? "flex" : "none"};
@@ -252,6 +246,8 @@ const ActionButton = styled.div`
   cursor: pointer;
   margin-bottom: 0.5vh;
   padding: 0.5vh 0;
+  border-radius: 0.25em;
+  font-size: 0.95em;
   display: flex;
   justify-content: center;
   align-items: center;

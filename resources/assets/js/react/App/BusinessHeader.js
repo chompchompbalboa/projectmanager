@@ -13,7 +13,6 @@ import AppContentHeader from './AppContentHeader'
 // Component
 //-----------------------------------------------------------------------------
 const BusinessHeader = ({ business }) => {
-
   return (
     <AppContentHeader header={business.name}>
       <Address>

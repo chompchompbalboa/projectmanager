@@ -21,11 +21,11 @@ Route::middleware(['auth'])->group(function() {
   // Initial Data
   Route::get('/app/initial-data', 'DataController@buildInitialData');
 
-  // Delete Data
-  Route::delete('/app/delete', 'DataController@deleteData');
+  // Project Data - Delete
+  Route::delete('/app/project/delete', 'ProjectController@deleteData');
 
-  // Save Data
-  Route::put('/app/save', 'DataController@saveData');
+  // Projec Data - Save
+  Route::put('/app/project/save', 'ProjectController@saveData');
 });
 
 Route::get('/', function () {

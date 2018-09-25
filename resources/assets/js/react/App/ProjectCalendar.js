@@ -8,10 +8,10 @@ const moment = extendMoment(Moment)
 import styled from 'styled-components'
 import _ from 'lodash'
 
+import AppContentRightColumnContent from './AppContentRightColumnContent'
 import ProjectCalendarCells from './ProjectCalendarCells'
 import ProjectCalendarDays from './ProjectCalendarDays'
 import ProjectCalendarHeader from './ProjectCalendarHeader'
-import ProjectContentContainer from './ProjectContentContainer'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
@@ -250,7 +250,7 @@ export default class ProjectCalendar extends Component {
       visibleMonthMoment
     } = this.state
     return (
-      <ProjectContentContainer 
+      <AppContentRightColumnContent 
         isActiveTab={isActiveTab}>
         <CalendarContainer>
           <ProjectCalendarHeader 
@@ -281,7 +281,7 @@ export default class ProjectCalendar extends Component {
             updateMilestone={this.updateMilestone}
             visibleMonthMoment={visibleMonthMoment}/>
         </CalendarContainer>
-      </ProjectContentContainer>
+      </AppContentRightColumnContent>
     )
   }
 }

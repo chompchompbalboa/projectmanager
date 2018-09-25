@@ -10,6 +10,8 @@ export default {
   negativeActionColor: "rgb(202, 27, 37)",
 
   tabHoverColor: "rgb(52, 63, 91)",
+
+  textareaBackground: "rgb(245, 245, 245)",
   
   sidebar: {
     background: "rgb(40, 44, 55)",

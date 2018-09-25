@@ -11,13 +11,7 @@ import AppContentTabs from './AppContentTabs'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const BusinessTabs = ({ activeTab, changeActiveTab }) => {
-
-  const tabs = [
-    {id: "DASHBOARD"},
-    {id: "EMPLOYEES"},
-    {id: "PROJECTS"}
-  ]
+const BusinessTabs = ({ activeTab, changeActiveTab, tabs }) => {
 
   return (
     <AppContentTabs 

@@ -18,6 +18,7 @@ export default {
     component: ProjectActivityQuestion,
     text: "Question",
     data: {
+      to: null,
       question: "",
       answer: ""
     }

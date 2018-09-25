@@ -1,21 +1,23 @@
 //-----------------------------------------------------------------------------
 // Imports
 //-----------------------------------------------------------------------------
-import ProjectFiles from '../ProjectFiles'
+import BusinessDashboard from '../BusinessDashboard'
+import BusinessEmployees from '../BusinessEmployees'
+import BusinessProjects from '../BusinessProjects'
 //-----------------------------------------------------------------------------
 // Export
 //-----------------------------------------------------------------------------
 export default {
   DASHBOARD: {
     text: "Dashboard",
-    component: ProjectFiles
+    component: BusinessDashboard
   },
   EMPLOYEES: {
     text: "Employees",
-    component: ProjectFiles
+    component: BusinessEmployees
   },
   PROJECTS: {
     text: "Projects",
-    component: ProjectFiles
+    component: BusinessProjects
   },
 }

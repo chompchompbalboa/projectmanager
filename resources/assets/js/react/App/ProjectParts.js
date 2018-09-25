@@ -4,15 +4,17 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import ProjectContentContainer from './ProjectContentContainer'
+import AppContentRightColumnContent from './AppContentRightColumnContent'
+import UnderConstruction from './UnderConstruction'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
 const ProjectParts = ({ isActiveTab }) => {
   return (
-    <ProjectContentContainer isActiveTab={isActiveTab}>
-      ProjectParts
-    </ProjectContentContainer>
+    <AppContentRightColumnContent isActiveTab={isActiveTab}>
+      <UnderConstruction 
+        from="ProjectParts"/>
+    </AppContentRightColumnContent>
   )
 }
 //-----------------------------------------------------------------------------

@@ -11,6 +11,8 @@ import { setUserStore } from './actions/userActions'
 
 import Business from './Business'
 import Projects from './Projects'
+import Me from './Me'
+import Settings from './Settings'
 import Sidebar from './Sidebar'
 //-----------------------------------------------------------------------------
 // Component
@@ -26,7 +28,7 @@ import Sidebar from './Sidebar'
 export default class App extends Component {
 
   state = {
-    activeContent: 'BUSINESS',
+    activeContent: 'PROJECTS',
     loading: true
   }
 
@@ -78,8 +80,10 @@ export default class App extends Component {
         <Sidebar 
           activeContent={activeContent} 
           setActiveContent={this.setActiveContent}/>
+        {!loading && <Me isActiveContent={activeContent === 'ME'}/>}
         {!loading && <Projects isActiveContent={activeContent === 'PROJECTS'}/>}
         {!loading && <Business isActiveContent={activeContent === 'BUSINESS'}/>}
+        {!loading && <Settings isActiveContent={activeContent === 'SETTINGS'}/>}
       </Container>
     )
   }

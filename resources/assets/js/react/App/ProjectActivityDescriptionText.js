@@ -3,21 +3,21 @@
 //-----------------------------------------------------------------------------
 import React from 'react'
 import styled from 'styled-components'
-
-import UnderConstruction from './UnderConstruction'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const BoilerplateStateless = ({}) => {
+const ProjectActivityHeaderText = ({ children }) => {
   return (
     <Container>
-      <UnderConstruction />
+      {children}
     </Container>
   )
 }
 //-----------------------------------------------------------------------------
 // Styled Components
 //-----------------------------------------------------------------------------
-const Container = styled.div``
+const Container = styled.div`
+  display: flex;
+`
 
-export default BoilerplateStateless
+export default ProjectActivityHeaderText

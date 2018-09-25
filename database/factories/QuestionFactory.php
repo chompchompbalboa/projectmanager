@@ -16,7 +16,8 @@ use Faker\Generator as Faker;
 $factory->define(App\Models\Question::class, function (Faker $faker) {
     return [
         'project_id' => App\Models\Project::all()->random()->id,
-        'user_id' => App\Models\User::all()->random()->id,
+        'from' => App\Models\User::all()->random()->id,
+        'to' => App\Models\User::all()->random()->id,
         'question' => $faker->paragraph($nbSentences = 3, $variableNbSentences = true),
         'answer' => $faker->paragraph($nbSentences = 3, $variableNbSentences = true)
     ];

@@ -12,21 +12,36 @@ import Icon from '../lib/Icon/Icon'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-export default class ProjectsTabsAddTab extends Component {
+export default class Dropdown extends Component {
 
   state = {
-    dropdownVisible: false,
-    highlightedProjectId: null,
-    listedProjects: this.props.projects,
+    dropdownVisible: this.props.dropdownVisible,
+    highlightedIndex: null,
+    listedOptions: this.props.options,
     searchValue: ""
   }
 
   componentDidMount = () => {
-    this.searchInput.focus()
+    const {
+      selectedOption
+    } = this.props
+    const {
+      dropdownVisible
+    } = this.state
+    dropdownVisible && this.searchInput.focus()
+    selectedOption === null && document.addEventListener('keydown', this.handleKeyDown, false)
   }
 
   componentDidUpdate = () => {
-    this.searchInput.focus()
+    const {
+      selectedOption
+    } = this.props
+    const {
+      dropdownVisible
+    } = this.state
+    dropdownVisible && this.searchInput.focus()
+    selectedOption === null && document.addEventListener('keydown', this.handleKeyDown, false)
+    selectedOption !== null && document.removeEventListener('keydown', this.handleKeyDown, false)
   }
 
   componentWillUnmount = () => {
@@ -36,23 +51,22 @@ export default class ProjectsTabsAddTab extends Component {
 
   changeSearchValue = (e) => {
     const {
-      activeProject,
-      addTab,
-      projects
+      selectOption
     } = this.props
     const {
       dropdownVisible
     } = this.state
-
+    selectOption(null)
     let nextSearchValue = e.target.value
-    let nextListedProjects = this.filterListedProjects(nextSearchValue)
-    let nextHighlightedProjectId = null
-    if (nextListedProjects.length === 1) {
-      nextHighlightedProjectId = nextListedProjects[0].id
+    let nextListedOptions = this.filterListedOptions(nextSearchValue)
+    let nextHighlightedIndex = null
+    if (nextListedOptions.length === 1) {
+      nextHighlightedIndex = 0
     }
     this.setState({
-      listedProjects: nextListedProjects,
-      highlightedProjectId: nextHighlightedProjectId,
+      dropdownVisible: true,
+      listedOptions: nextListedOptions,
+      highlightedIndex: nextHighlightedIndex,
       searchValue: nextSearchValue
     })
   }
@@ -68,32 +82,31 @@ export default class ProjectsTabsAddTab extends Component {
 
   handleKeyDown = (e) => {
     const {
-      highlightedProjectId,
-      listedProjects
+      highlightedIndex,
+      listedOptions
     } = this.state
     const {
-      addTab,
-      projects
+      selectOption
     } = this.props
 
     if(e.keyCode == 13) { // Enter
-      if(highlightedProjectId !== null) {
-        addTab(_.find(projects, {id: highlightedProjectId}))
+      if(highlightedIndex !== null) {
+        this.selectOption(listedOptions[highlightedIndex])
         this.toggleDropdown()
       }
     }
   }
 
-  filterListedProjects = (searchValue) => {
+  filterListedOptions = (searchValue) => {
     const {
-      projects
+      options
     } = this.props
 
-    return projects.filter((project) => {
-      const stringToSearch = project.code + " - " + project.name
+    return options.filter((option) => {
+      const stringToSearch = option.text
       const searchValueInString = stringToSearch.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
       if (searchValueInString) {
-        return project
+        return option
       }
     })
   }
@@ -104,17 +117,24 @@ export default class ProjectsTabsAddTab extends Component {
     })
   }
 
-  handleProjectClick = (project) => {
+  handleOptionClick = (option) => {
     const {
-      addTab
+      selectOption
     } = this.props
+    selectOption(option)
     this.toggleDropdown()
-    addTab(project)
+  }
+  
+  selectOption = (option) => {
+    const {
+      selectOption
+    } = this.props
+    selectOption(option)
   }
 
   toggleDropdown = () => {
     const {
-      projects
+      options
     } = this.props
     const {
       dropdownVisible
@@ -123,90 +143,71 @@ export default class ProjectsTabsAddTab extends Component {
     const nextDropdownVisible = !dropdownVisible
     if (nextDropdownVisible) {
       document.addEventListener('mousedown', this.checkForClickOutside, false)
-      document.addEventListener('keydown', this.handleKeyDown, false)
     }
     else {
       document.removeEventListener('mousedown', this.checkForClickOutside, false)
-      document.removeEventListener('keydown', this.handleKeyDown, false)
     }
     this.setState({
       dropdownVisible: nextDropdownVisible,
       highlightedProjectId: null,
-      listedProjects: projects,
+      listedOptions: options,
       searchValue: ""
     })
   }
   
   render() {
     const {
-      addTab
+      selectedOption
     } = this.props
     const {
       dropdownVisible,
-      highlightedProjectId,
-      listedProjects,
+      highlightedIndex,
+      listedOptions,
       searchValue
     } = this.state
     
     return (
-      <React.Fragment>
-        <AddTabContainer
-          innerRef={c => this.container = c}>
-          <AddTabIconContainer
-            onClick={this.toggleDropdown}>
-            <Icon 
-              color="white"
-              icon={dropdownVisible ? "exit" : "plus"}
-              size={dropdownVisible ? "1em" : "1.125em"}/>
-          </AddTabIconContainer>
-          <AddTabDropdown
-            visible={dropdownVisible}>
-            <StyledInput
-              innerRef={c => this.searchInput = c}
-              value={searchValue}
-              onChange={this.changeSearchValue}/>
-            <AddTabProjectsContainer>
-              {listedProjects.map((project, index) => {
-                return (
-                  <AddTabProject
-                    key={index}
-                    isHighlighted={highlightedProjectId === project.id}
-                    onClick={() => this.handleProjectClick(project)}>
-                    {project.name}
-                  </AddTabProject>
-                )
-              })}
-            </AddTabProjectsContainer>
-          </AddTabDropdown>
-        </AddTabContainer>
-      </React.Fragment>
+      <Container
+        innerRef={c => this.container = c}>
+        <VisibleContainer
+          onClick={this.toggleDropdown}>
+          <StyledInput
+            innerRef={c => this.searchInput = c}
+            size={searchValue.length === 0 ? (selectedOption === null ? 1 : selectedOption.text.length) : searchValue.length}
+            value={selectedOption ? selectedOption.text : searchValue}
+            onChange={this.changeSearchValue}/>
+        </VisibleContainer>
+        <DropdownContainer
+          visible={dropdownVisible}>
+          <AddTabOptionsContainer>
+            {listedOptions.map((option, index) => {
+              return (
+                <AddTabProject
+                  key={index}
+                  isHighlighted={highlightedIndex === index}
+                  onClick={() => this.handleOptionClick(option)}>
+                  {option.text}
+                </AddTabProject>
+              )
+            })}
+          </AddTabOptionsContainer>
+        </DropdownContainer>
+      </Container>
     )
   }
 }
 //-----------------------------------------------------------------------------
 // Styled Components
 //-----------------------------------------------------------------------------
-const AddTabContainer = styled.div`
+const Container = styled.div`
   position: relative;
   margin-left: 0.1vw;
 `
 
-const AddTabIconContainer = styled.div`  
-  cursor: pointer;
-  width: 1.25em;
-  height: 1.25em;
-  border-radius: 0.625em;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: ${colors.primary};
-  &:hover {
-    background-color: ${colors.primary};
-  }
-`
+const VisibleContainer = styled.div``
 
-const AddTabDropdown = styled.div`
+const DropdownContainer = styled.div`
+  z-index: 100;
   visibility: ${props => props.visible ? "auto" : "hidden"};
   position: absolute;
   margin-top: 1vh;
@@ -217,16 +218,15 @@ const AddTabDropdown = styled.div`
 `
 
 const StyledInput = styled.input`
-  padding: 1.5vh 0 1vh 0;
-  margin-left: 1vw
-  width: calc(100% - 2vw);
+  padding: 0;
   border: none;
   outline: none;
-  border-bottom: 1px solid rgb(225,225,255);
   font-size: 1em;
+  font-weight: 700;
+  text-align: center;
 `
 
-const AddTabProjectsContainer = styled.div`
+const AddTabOptionsContainer = styled.div`
   margin: 1vh 0;
   max-height: 55vh;
   overflow-y: scroll;

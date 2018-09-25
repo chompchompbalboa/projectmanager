@@ -18,16 +18,22 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
     <Container>
       <SidebarTile
         activeContent={activeContent}
-        icon="business"
-        id="BUSINESS"
+        icon="user"
+        id="ME"
         setActiveContent={setActiveContent}
-        text="Business"/>
+        text="Me"/>
       <SidebarTile
         activeContent={activeContent}
         icon="projects"
         id="PROJECTS"
         setActiveContent={setActiveContent}
         text="Projects"/>
+      <SidebarTile
+        activeContent={activeContent}
+        icon="business"
+        id="BUSINESS"
+        setActiveContent={setActiveContent}
+        text="Business"/>
       <SidebarTile
         activeContent={activeContent}
         icon="settings"

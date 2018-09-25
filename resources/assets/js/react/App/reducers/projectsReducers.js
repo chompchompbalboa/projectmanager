@@ -16,8 +16,7 @@ const projects = (state = defaultState, action) => {
       } = action
       const nextState = Object.assign({}, state)
       nextState[projectIndex] = _.set(Object.assign({}, nextState[projectIndex]), key, value)
-      return nextState
-      return action.nextStore
+      return _.values(nextState)
       break;
     }
 
